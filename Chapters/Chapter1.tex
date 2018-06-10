@@ -44,7 +44,7 @@ The rising availability of the Internet increased the demand for methods of pare
 
 \begin{figure}[th]
 \centering
-\includegraphics{Figures/frequency-of-internet-use-by-teens}
+\includegraphics[width=1\textwidth]{Figures/frequency-of-internet-use-by-teens}
 \decoRule
 \caption[Frequency of Internet Use by Teens]{Frequency of Internet Use by Teens}
 \label{fig:frequency-of-internet-use-by-teens}
@@ -62,9 +62,27 @@ There are two types of control techniques, behavioral control, which consists of
 \item authoritative: the parent attempts to direct the child's activities in a rational manner, by sharing the reasoning behind the policy and soliciting the child's objections when he refuses to conform; disciplined conformity and autonomous self-will are valued by the authoritative parent
 \end{itemize}
 
+Several techniques exists for creating parental controls to block certain websites. Parental control software can monitor API to observe applications such as web browsers or chat applications and to intervene based on certain criteria, such as time based criteria or as a match in a database of banned words. Other techniques that involve a proxy server are also used, in which the proxy server serve as an intermediary which can intervene in the delivery of some content based on various criteria based on the content, but this method has a major disadvantage because it requires client configuration to use the service, which can be easily bypassed.
+
+The difference between content filters and computer usage management methods is that the later is focused on empowering the parents to balance the computing environment for children, by allowing parents to enforce the learning component into the computing time of children, where children can earn play time by working through educational content. This method is very powerful because it stimulates self-regulation in children, instead on relying solely on parental control, and we will use some ideas from this method to develop our control and regulation system.
+
+Recently, some devices which are used for network based parental control have emerged. These devices use different methods to block inappropriate content, such as packet filtering, DNS Response Policy Zone (RPZ) and Deep packet inspection (DPI), and work as a firewall router. Some commercial and governmental communication networks use these methods also, but these type of devices were developed for home also, and are used to create a new home wireless network specifically designed for kids to connect to. We developed our system using the same approach, by creating a custom wireless network for different type of users, different age level children and parents, and by using the packet filtering and DNS techniques to manage content filters.
+
 \subsection{Content filters}
 
-The increased use of mobile devices has created a demand for parental controls for these devices. The first carrier which offered age-appropriate content filters was Verizon, in 2007. With the release of iPhone OS 3.0 in 2009, Apple introduced a mechanism to create age brackets for users, to block unwanted applications from being downloaded.
+The increased use of mobile devices has created a demand for parental controls for these devices. The first carrier which offered age-appropriate content filters was Verizon, in 2007. With the release of iPhone OS 3.0 in 2009, Apple introduced a mechanism to create age brackets for users, to block unwanted applications from being downloaded. Filtering options are also offered by most internet providers, to limit internet browsing options and block unsuitable content. The software used to restrict or control the content a user is capable to access is commonly referred to as internet filter or content filter.
+
+The content access restrictions can be applied at different levels, from governments applying them nationwide, to ISP blocking it's clients and by a parent to a child's computer. The implementation of this content filtering mechanism can be done at different levels also, by software on the client computer, by using the network infrastructure such as proxy servers, DNS servers or firewall, but none of these solutions alone provides complete coverage, so a mix of technologies have to be used to achieve proper content control.
+
+\begin{itemize}
+\item Browser based filters are the most lightweight solution, and the filtering is done by using a third-party browser extension
+\item E-mail filters are commonly implemented using a statistical method, Bayesian filters, by acting on information contained in the mail body, headers or attachments
+\item Client side filters work by installing it as software on each target device
+\item Content-limited (or filtered) ISPs
+\item Network-based filtering
+\item DNS-based filtering
+\item Search-engine filters
+\end{itemize}
 
 %----------------------------------------------------------------------------------------
 
