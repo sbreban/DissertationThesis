@@ -78,14 +78,48 @@ The content access restrictions can be applied at different levels, from governm
 \item Browser based filters are the most lightweight solution, and the filtering is done by using a third-party browser extension
 \item E-mail filters are commonly implemented using a statistical method, Bayesian filters, by acting on information contained in the mail body, headers or attachments
 \item Client side filters work by installing it as software on each target device
-\item Content-limited (or filtered) ISPs
-\item Network-based filtering
-\item DNS-based filtering
-\item Search-engine filters
+\item Content-limited (or filtered) ISPs are service providers that offer access to only a set of Internet content, to implement government, regulatory or parental control over its subscribers
+\item Network-based filtering is done at the transport layer, by implementing a transparent proxy, redirecting user requests to it by a switch or a router, or at the application layer, by configuring the client to send requests directly to the proxy server. \parencite{contentGateway}
+\item DNS-based filtering is implemented at the DNS layer and works by preventing lookups for domains that do not fit within a set of rules, parental control or company rules
+\item Search-engine filters work by filtering out inappropriate search results, but if the client knows the URL for a specific content, he can access it without using a search engine; search providers offers child friendly versions of their engines, which filter content inappropriate for children from the search results
 \end{itemize}
+
+We implement a DNS-based filtering mechanism, to be able to easily filter out the content that is definitely harmful for a child and does not bring any value, while not being too restrictive and giving the children room to explore and find by themselves what values means and how the time is best spent on the device. The main reason for filtering is to protect the user from harmful content, but it is used also to block malware and other intrusive material, as adware, spam, computer viruses, spyware, which can be even more harmful to children. The first level of filtering that we try to do is to block ads by integrating with the open-source ad-blocking solution Pi-hole, which works as a DNS sinkhole to block advertisement and internet trackers.
+
+Filtering mechanisms are not always efficient, and are also subject to some criticism. The filtering errors are of two kinds, overblocking, when the filter is too zealous and mislabels content that should be acceptable, such as labeling health related information as being porn-related, and under-blocking, when the filter is unable to update quickly to new information available on the Internet. Content filtering can be a powerful censorship tool and there is a lot of discussion around the morality and legality of this kind of methods at a certain level, mostly state and country level. But it can be harmful if used incorrectly even at the family level, because using too strict policies can influence children behavior, and not always for good.
 
 %----------------------------------------------------------------------------------------
 
 \section{A self regulation approach}
+
+An in-depth study conducted on 75 Android apps that have the main purpose of promoting teens and children mobile online safety found that the majority of them (89\%) are supported by features of parental control, and only 11\% favour self-regulation. The study presented a framework for Teen Online Safety Strategies which describes the difference between parental control and teen-self regulation. The three main parental control strategies identified are:
+
+\begin{itemize}
+\item monitoring is the surveillance of online activities, such as text messages, call logs or web browser history; Some studies found that monitoring was associated with higher online risks for some, suggesting to use monitoring only after some kind of online problem occurred.\parencite{duerager2012can}
+\item restriction occurs by placing rules on online activities, as setting limits on screen time and content acceptable for viewing. This kind of methods have some positive impact, such as reducing cyberbullying, but can also have negative effects, by causing children to take more risk-seeking behaviors. \parencite{shin2014exploring}
+\item active mediation involves discussions regarding online activities between parents and children, and it reduces online risks without reducing the benefits of online engagement. \parencite{duerager2012can}
+\end{itemize}
+
+Self-regulation is the ability to control the emotions and behaviors by monitoring and evaluating oneself against given social standards. The analogous teen self-regulation strategies are:
+
+\begin{itemize}
+\item self-monitoring is a key component of self-regulation, and children must be aware of their own motivations and actions through self-observation. \parencite{bandura1991social}
+\item impulse control is the ability to inhibit short term desires in favor of the long term consequences caused by ones' actions, and losing control of this is the main reasons why self-regulation fails \parencite{baumeister1996self}
+\item risk-coping is a self-regulatory process that occurs after a stressful situation, by attempting to address the problem and the negative emotions caused. Actively coping with risky online situations help teens to feel less bothered about a risky event that occurred. \parencite{d2013cope}
+\end{itemize}
+
+Usability was another issue in finding a good and efficient parental control mobile application. From the 89 application tested, 14 had configuration issues, some required users to have a Gmail account, other needed a VPN connection configured, some where showing annoying ads. Other apps were not meeting the goal of protecting the children from online risks, most of them were focusing on regulating web browsing and social media was one of the least prevalent activity monitored, but research suggest that most online risks, at least for adolescents, are encountered through the use of social media platforms. The features offered did not promote any values like trust, accountability, respect and transparency.
+
+Most of the apps related to parental controls support mostly monitoring and restriction of mobile activities. Only some of the them support features like parental active mediation (<1\%), teen risk-coping (4\%), self monitoring (2\%), or impulse control (<1\%), but some of them added education as another safety strategy. We will try to have a different approach, by focusing more on the self-regulation approach while keeping the monitoring and restriction features to the minimum necessary, and try to add the education component also, to drive children to some learning resources and interactive quizes before rewarding them with some device time.
+
+We try to design out solution by following the practices suggested in the study from \parencite{wisniewski2017parental} and to focus on usability, social media control and to implement features that match the self regulation techniques. Firstly, we create 4 age brackets, 0-5, 6-10, 11-13, 14+, to be able to have more granular control and to implement specific features for each age, and we try to design the application experience by taking into account the view of the clients, the children, not just the parent's perspective. The process of establishing the rules and starting the parental control system should be done also as a collaboration between parents and children. The current solutions are fairly simplistic: as new functionality becomes available, new apps are created to regulate and monitor the children activities. While these approach prevent the risks, it also has the potential of limiting some positive engagement. As we can see in the figure below, the new framework proposed for developing mobile online safety application is founded on core family values and emphasizes parental active mediation and self-regulation. The benefit of this framework is that it is not technically tied directly to children mobile activities and can focus on supporting more important needs of parents and children. We propose prototypes to promote collaborative practices between parents and children that support risk-coping and active parental mediation, by implementing a system for the children to learn about online risks and encouraging collaborative efforts when establishing policies. Another unique opportunity for design is in the are of supporting self-regulatory processes in the absence of parents. Instead of simply giving an SOS feature to get help from adults, some other ways to support the children can be found, so that they can come up with their solutions to online problems or to come to the aid of others who could benefit from their help.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1\textwidth]{Figures/current-vs-proposed}
+\decoRule
+\caption{Current versus Proposed Approach for Online Safety Apps}
+\label{fig:current-vs-proposed}
+\end{figure}
 
 %----------------------------------------------------------------------------------------
