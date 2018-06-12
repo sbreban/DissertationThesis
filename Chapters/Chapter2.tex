@@ -2,6 +2,34 @@
 
 \chapter{Content-control software and providers} % Main chapter title
 
-\label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+\label{Chapter2} % For referencing the chapter elsewhere, use \ref{Chapter1}
+
+Content control policies can be implemented at different levels. Some ISPs offer parental control options and even parental control software, other content control systems are integrated with the operating system, such as MacOS, which offers parental controls for some applications (Mail, Finder, iChat, Safari). The two major forms of content filtering technology are application gateway and packet inspection. The application gateway is called web-proxy for HTTP access and works by inspecting the request and the returned page using some rules and deciding if it should return the response. The packet inspection technique does not interfere with the connection, but inspect the data as it goes past and may decide at a later point to disconnect the client, by inject a TCP-Reset or similar faked packet. A combination of these two techniques is very popular because it allows more detailed filtering and can significantly reduce the cost of the system.
+
+We will present next some parental control application and their features, on which we will try to build our system by taking a more self-regulatory approach.
+
+\section{Net Nanny}
+
+Net Nanny provides a content-control software as a way to monitor and control children's computer activity. The main features include blocking and filtering Internet content, place time limits on use and block PC games. Websites are blocked by content rather than URL, preventing children from accessing blocked websites through proxy websites. It is available on desktop platforms, Windows and Mac, and also on mobile platforms, Android and iOS, but the features and usability is not consistent on all platform, with some key features lacking on the mobile. It uses a dynamic filter that scans and analyses each web site to determine if it is appropriate for a child, based on a unique customization done by the parent. All the initial configuration is done online and it enforces the rules via a local client on each device it is installed. For each client, you can select from 4 profiles: Child, Pre-Teen, Teen and Adult, which can be further customized. \parencite{netNannyFeatures}
+
+\subsection{Content Filtering}
+
+Content filtering is the most used feature in all parental control systems and Net Nanny filters by analyzing the content for each web page in real time. Each site is matched against 17 objectionable categories, and each child profile have different level of blocking. Some categories are not completely blocked for some profiles, but the parents get a notification when the child visit sites in these categories. Parents can also create custom rules, to temporary allow access for some devices, and whitelists and blacklists for each child, to always allow or block certain websites. We follow the same approach by creating two classes of users for domain filtering and use a custom blocking mechanism to block certain domains for children, while allowing them for parent users.
+
+\subsection{Internet Time Scheduling}
+
+Children's internet use can be controlled in two ways using Net Nanny, by creating weekly schedules in half-hour increments, and you can also create weekly allowance duration in one-hour increments. This system does not depend on the system clock, so it cannot be bypassed. But it would be more useful to have more granularity when setting time limits, that's why we support 15-minute increments allowance periods for each day.
+
+\subsection{Email notifications}
+
+Net Nanny have two types of email notifications enabled. The first type of notification is sent when a child request a blocking exception for a specific domain, and the other one is in the form of a weekly summary. You can configure to get notification for multiple types of events, when a child hits a blocked site, continues after a warning or request a change in the blocking status. It would be more useful to have multiple options of getting notified about certain events occurring in the system, that's why we introduced mobile notifications into our system.
+
+\subsection{Detailed Reporting}
+
+Net Nanny offers an online console where you can view all the activity reports. You can view the activity by day, week and month, but not older than 30 days. It shows the blocked content in a pie chart, with some more information on mouse over. The report goes as deep as to show the page title, the time stamp and the user for each URL visited on a specific device. we do not include any type of reporting, because we thing that it would be a privacy issue for the child, since we try to implement a self-regulation system. All the discussion should be done in the family and the child should be warned about visiting certain domains, but not by checking every move he makes online. That's why we don't include any location related features, and Net Nanny does not support location either, but some other parental control systems do.
+
+\subsection{Mobile Support}
+
+The mobile support for Net Nanny is similar to the desktop experience, with some limitations. For the system to work, all the browsing should be done through the proprietary browser offered. On the iPhone the features are even more limited, because it does not interact with other apps and services at all. Since we started developing for mobile first and we try to keep the application features decoupled from the client device and system, we should not suffer of these limitations and we provide a seamless experience on both mobile platform, Android and iOS. \parencite{netNannyPCMag}
 
 %----------------------------------------------------------------------------------------
