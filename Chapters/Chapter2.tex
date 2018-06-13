@@ -14,7 +14,15 @@ Net Nanny provides a content-control software as a way to monitor and control ch
 
 \subsection{Content Filtering}
 
-Content filtering is the most used feature in all parental control systems and Net Nanny filters by analyzing the content for each web page in real time. Each site is matched against 17 objectionable categories, and each child profile have different level of blocking. Some categories are not completely blocked for some profiles, but the parents get a notification when the child visit sites in these categories. Parents can also create custom rules, to temporary allow access for some devices, and whitelists and blacklists for each child, to always allow or block certain websites. We follow the same approach by creating two classes of users for domain filtering and use a custom blocking mechanism to block certain domains for children, while allowing them for parent users.
+Content filtering is the most used feature in all parental control systems and Net Nanny filters by analyzing the content for each web page in real time. Each site is matched against 17 objectionable categories, and each child profile have different level of blocking. Some categories are not completely blocked for some profiles, but the parents get a notification when the child visit sites in these categories. Parents can also create custom rules, to temporary allow access for some devices, and whitelists and blacklists for each child, to always allow or block certain websites. We follow the same approach by creating two classes of users for domain filtering and use a custom blocking mechanism to block certain domains for children, while allowing them for parent users. \parencite{netNannyTomsGuide}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1\textwidth]{Figures/netnanny}
+\decoRule
+\caption{You can block content categories with Net Nanny's Web filtering tools.}
+\label{fig:circle}
+\end{figure}
 
 \subsection{Internet Time Scheduling}
 
@@ -34,11 +42,19 @@ The mobile support for Net Nanny is similar to the desktop experience, with some
 
 \section{Qustodio}
 
-Qustodio is a parental control tool that runs on any device, from PC to Android and iOS and even on Kindle devices. It has a lot of features, from web content filtering, app blocking and detailed activity logs. The configuration and monitoring is handled either through an online dashboard or a mobile control application. For configuration, you need to install a local client on every device and assign a child's profile. The Windows desktop client has even an option to hide the Qustodio install, but we do not support this kind of approaches, and that's way we choose to not hide the parental control app in any way, because there's a fine line between spying and parenting and when trying to follow a self-regulatory approach, conversation and transparency are more important. The process of registering the mobile app involves assigning an existing or a new child profile and a name for the device, and specifying whether it is a parent or a child device. We use the same registration process for a device and we also have 2 types of users, a parent and a child, each class having access to different features.
+Qustodio is a parental control tool that runs on any device, from PC to Android and iOS and even on Kindle devices. It has a lot of features, from web content filtering, app blocking and detailed activity logs. The configuration and monitoring is handled either through an online dashboard or a mobile control application. For configuration, you need to install a local client on every device and assign a child's profile. The Windows desktop client has even an option to hide the Qustodio install, but we do not support this kind of approaches, and that's way we choose to not hide the parental control app in any way, because there's a fine line between spying and parenting and when trying to follow a self-regulatory approach, conversation and transparency are more important. The process of registering the mobile app involves assigning an existing or a new child profile and a name for the device, and specifying whether it is a parent or a child device. We use the same registration process for a device and we also have 2 types of users, a parent and a child, each class having access to different features. \parencite{qustodioPCMag}
 
 \subsection{In-Depth Reports}
 
 You can use the online dashboard to get up to date reports, or you can get an email with the daily activity summary for each child. The usage overview for search, web, social, app and device is shown in an interactive chart, with information specific to each category, such as interactions on Facebook and visited URLs. There is also support for creating rules, such as web browsing rules, application rules and time-usage limits.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1\textwidth]{Figures/qustodio}
+\decoRule
+\caption{Qustodio Reports}
+\label{fig:qustodio}
+\end{figure}
 
 \subsection{Web Filtering}
 
@@ -53,5 +69,36 @@ You can control the usage by defining a weekly schedule in one-hour increments p
 Social media monitoring on Qustodio is limited to Facebook. You can see the child's Facebook wall activity on the online dashboard, including posts, pictures and comments, as well as the identity of any friends involved in online chats, but it does not report the content of those chats, to maintain some degree of privacy. It also includes location-reporting features, which you can use to check the child's location as often as every five minutes.
 
 \subsection{Mobile Support}
+
+The mobile application on Android offers features similar to the online portal. You can view all the children associated with the account and also set up another user profile, but you can't remove a child or change what device is associated with what profile. It redirects to the web portal when trying to make these changes. On the Android device, it can monitor all calls and SMS messages and you can choose to record the content of each message, block calls or restrict specific contacts, but this does not apply to third-party messaging apps like WhatsApp. Another feature specific to Android is the Panic Button, which works by configuring up to four trusted contacts which get notified in case of emergency. The iOS version cannot block or monitor calls and texts, because iOS blocks most interactions between applications, but the other features are almost identical to the Android version, with some more limitations related to location.\parencite{qustodioPCMag} We chose to not implement any call and SMS related features because we think that it goes beyond the scope of parental control, and that's why we do not implement any location related features.
+
+\section{Circle with Disney}
+
+Another system, which is more similar to ours, because it uses and external device connected to the local wireless network to implement parental control features is Circle with Disney. It is very easy configurable, because you only have to install it on the network and then use the simple mobile app to configure time limits and content filtering, among other features. The initial configuration is simple, you only have to plug the device in and connect to the device's hotspot, using the password supplied by the app to link the local Wi-Fi to Circle. The technology it uses is called ARP (Address Resolution Protocol) spoofing. The setup process is completed by configuring your own profile by choosing from five filter level: Pre-K, Kid, Teen, Adult and None. Next you have to identify the devices connected to the home network and choose a profile for them. You can leave some devices as unmanaged, and the others you can associated with the corresponding family member. You can add photos for each child user and you can associate the devices owned to the user profile, but the system assumes that a device is used by only one child, so you cannot control properly shared devices. \parencite{circlePCMag}
+
+\subsection{Blocking Platforms}
+
+Each filter level comes with preconfigured platforms which you choose to block or unblock. Platforms refer to a list of Internet-aware apps. No platform is blocked at the Adult level, but for Teen level, HBO, Meerkat, Periscope, Reddit, Snapchat and Tumblr are blocked, for example, as we can see in the figure below. \parencite{circleMashable}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1\textwidth]{Figures/circle}
+\decoRule
+\caption{Circle With Disney Main Features}
+\label{fig:circle}
+\end{figure}
+
+\subsection{Content Filtering}
+
+There are 30 content categories which can be allowed or blocked, depending on profile. Every profile have some categories blocked by default, even the Adult profile has Dating, Explicit Content, Gambling, Mature and VPN \& Proxies blocked. The Teen level blocks some more categories, while Kid level adds Social Media to the always-blocked list. For the Pre-K level, the only sites permitted are those from the Kids category. The changes to the filtering policies take effect immediately and since proxies are blocked by default, there is no way of getting around them. We chose to use the same approach and use an additional device on the network to implement the control policies, because it makes the experience device-independent.
+
+\subsection{Privacy and Safety}
+
+Circle offers also some privacy and safety settings, which are specific for each profile level. For example, Safe Search is forced in Google for Teen level, while the Kid level adds YouTube restrictions, and these restrictions are always on for Pre-K level.
+There is even and ad blocking feature, which works fine, without breaking the page layouts. Even though ad blocking hurts the revenue of websites relying on advertising, we think that kids should not be involved in the advertising business, so we decided to include the ad blocking feature, by relying on the Pi-Hole system to block ads for children profile level.
+
+\subsection{Time Limits, Bedtime and Pause}
+
+Circle does not support weekly hour-by-hour Internet schedule the way other parental control systems do, but you can set a daily maximum for Internet access, which applies for all devices of a user. You can also set these daily limits for each platform or content categories. Internet access can be cut off for devices at a specified time, bed time, and will resume at the specified wakeup time. You cannot block access to any specific app, you can only cut the Internet access, since the device can control only the network. This can be a disadvantage, but is also more easy to configure such a system, because it may work without ever installing anything on the client device. Another feature that Circle offers is the pause function. You can choose to pause the internet access for all the managed devices, only for one child's devices or just for one specific device.
 
 %----------------------------------------------------------------------------------------
