@@ -2,6 +2,33 @@
 
 \chapter{A self regulation approach} % Main chapter title
 
-\label{Chapter3} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+\label{Chapter3} % For referencing the chapter elsewhere, use \ref{Chapter1}
+
+We started working on our system as a solution for parents who wanted a reliable parental control system, which tries to use the newest discoveries related to parental control impact on child development and is also easy to install and use. Most of the existing parental control systems are subscription based and work by creating a custom configuration for a specific family and enforcing the rules by using a client application for each target device. We wanted to design our system such that the user is in full control of the system configuration and all the data is kept locally, because we saw no point in getting the data outside the house, since its only use is only inside the local network, at least for out system. The system that we developed does not require any kind of client configuration, all the configuration needed is done on the central node, which in out case is a Raspberry Pi, which is an access point and a system control node, and a mobile application which the parents use to configure the parental control policies. We also offer a client application design for children devices, but that is only to extend the basic functionality and to also help with some initial configuration. So we basically moved the configuration part from the clients to the central node of the system. We tried to make the configuration as simple as possible, such that even a non-technical person can configure and start the system. The only commercial level alternative control parental system that we found using the same approach is Circle With Disney, whose details we presented in \ref{Chapter2}. It uses an additional network device which you have to purchase and it work by connecting to the local wireless network and using a technique called ARP Spoofing, used mostly for network attacks, because it aims to associate and attacker's MAC address with the IP address of another host, such as the default gateway, causing any traffic meant for that IP address to be sent to the attacker instead. Because we are building out system around the access point, instead of using an additional device, we have much more flexibility in the techniques we use for filtering and blocking at potentially a higher cost for the device. Any type of network device with a wireless card can be used to establish this kind of setup, but we used a Raspberry Pi because it is a cheap device, having almost the same price as a good router, and is quite powerful and flexible. Another difference between out approach and the Circle device is that the core of system is built around the  Domain Name System, by using a local DNS server for filtering and blocking. For this test we are using the open source project Pi-hole, which uses the DNS forwarder and DHCP server Dnsmasq to create the blocking and filtering system, which serves the primary scope of blocking all ads. Other tools that we used to develop out system are Flutter, an open-source mobile application development SDK created by Google, to make the mobile control application available on both Android and iOS and the Netfilter framework for more fine control on the network traffic on the access point. The tools and technologies used are as follows:
+
+\begin{itemize}
+\item Raspberry Pi 3 - as the access point and main controller
+\item Pi-hole - for blocking and filtering
+\item Dnsmasq - as DNS forwarder
+\item Netfilter - to control the traffic on the access point
+\item Go lang - the create a REST server for the mobile application
+\item Flutter - to implement the cross-platform mobile application
+\end{itemize}
+
+We will next present the principles behind each of these components of the system and detail how they all work together to make the parental control task easy for the parents and beneficial for children development.
+
+\section{Raspberry Pi}
+
+\section{Pi-hole}
+
+\section{Dnsmasq}
+
+\section{Netfilter}
+
+\section{Go lang}
+
+\section{Fullter}
+
+\section{All together}
 
 %----------------------------------------------------------------------------------------
