@@ -61,6 +61,54 @@ Other benefits that Pi-hole brings to your local network are related to bandwidt
 
 \section{Dnsmasq}
 
+Dnsmasq is a lightweight and easy to configure DNS forwarder and DHCP server. It can be used to serve names for local machines which are not in the global DNS and is designed to offer DNS and DHCP solutions for small networks. \parencite{debianHowToDnsmasq}
+It has low resource requirements for system resources, so it is a good solution for our Raspberry Pi setup. It improves the performance and reduces the load on upstream DNS servers by caching DNS records locally.
+
+Dnsmasq loads the content of /etc/hosts file to be able to resolve local names, and that allows some useful tricks, such as overriding some global domains, by adding a line with the format "0.0.0.0 annoyingsite.com". This prevents the domain annoyingsite.com from being resolved and that's the way Pi-hole uses it to block ads, by creating an entry for each known ad serving domain, and we also use that to block any other unwanted domains. Pi-hole keeps this Dnsmasq related configuration in a file named gravity.list, which is updated periodically to include the newest ad domains. It currently contains around 126000 of ad domains and the number is constantly growing. We can see below some of the line from this files, with 10 blocked ad serving domains.
+
+\begin{lstlisting}
+192.168.0.103 zxypenguin.people-group.su
+192.168.0.103 zy.zeroredirect1.com
+192.168.0.103 zyban-store.shengen.ru
+192.168.0.103 zyban.1.p2l.info
+192.168.0.103 zyban.about-tabs.com
+192.168.0.103 zybezradio.com
+192.168.0.103 zyiztazhfprochain.review
+192.168.0.103 zyjyyy.com
+192.168.0.103 zyngatables.com
+192.168.0.103 zyngawithfriends.com
+\end{lstlisting}
+
+The included DHCP server functionality supports static and dynamic DHCP leases, multiple networks and IP address ranges. We define a DHCP range for our network, along with the upstream DNS servers to use. The defined upstream DNS servers are the Google one and the configuration for this looks as follows:
+
+\begin{lstlisting}
+server=8.8.8.8
+server=8.8.4.4
+interface=wlan0
+dhcp-range=10.0.0.2,10.0.0.5,255.255.255.0,12h
+\end{lstlisting}
+
+Other Dnsmasq feature that is for use for us is that it can support different DNS server configuration for different DHCP settings. We are using this to establish the way the two classes of users defined in out system can access the network, since we don't want to apply the same blocking rules for the parents as for the children. Dnsmasq supports defining a different DNS resolver based on MAC address, and we use that to allow the parent's device to bypass the domain blocking rules that apply only to children devices, by configuring the system to use the Google resolver for that devices. That is easily done by adding the following rules to the Dnsmasq configuration:
+
+\begin{lstlisting}
+## This will go straight to Googles DNS Servers.
+dhcp-option=tag:googlesdns1,6,8.8.8.8
+dhcp-option=tag:googlesdns2,6,8.8.4.4
+
+## This will go straight to Opendns Servers.
+dhcp-option=tag:opendns1,6,208.67.222.220
+dhcp-option=tag:opendns2,6,208.67.222.222
+
+## Your Device that goes to Google DNS
+#dhcp-host=dc:0b:34:cc:b0:ff,set:googlesdns1 #Nexus
+
+## Your Device that goes to OpenDNS
+#dhcp-host=a8:b8:6e:41:0e:de,set:opendns1
+#dhcp-host=f8:23:b2:ad:4d:f3,set:opendns1
+\end{lstlisting}
+
+We can configure that to work with different devices and DNS servers, to add another level of control over the blocking features. \cite{archwikiDnsmasq}
+
 \section{Netfilter}
 
 \section{Go Lang}
