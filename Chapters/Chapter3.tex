@@ -23,7 +23,7 @@ Raspberry Pi is a series of small single-board computers developed in the United
 
 \section{Pi-hole}
 
-Pi-hole is an Linux application which block advertisements and internet trackers at the network-level, by acting as a DNS sinkhole, and also DHCP server, on a private network. A DNS sinkhole is the name gives to a DNS server that gives out false information to prevent the use of a certain domain name. It was designed for use on embedded devices with network capabilities, such as the Raspberry Pi. It has the ability to block traditional adverts on websites, but also adverts in other places, such as smart TVs and mobile operating systems. It works by serving as a DNS server for a private network and using a list of advert and tracking domains from predefined sources that the system uses to compare DNS queries to. \parencite{salmela2015pihole} If a match is found in one of the block lists, Pi-hole will refuse to resolve the requested domain. This feature can be used to block any domains, not the advertisement ones, by extending the block list. We use this feature to block domains that are not considered useful for a child, such as social media platforms. You can also manually whitelist a domain, such that it is never blocked, and you can use the Pi-hole system to view reports about the DNS queries done by the clients.
+Pi-hole is an Linux application which block advertisements and Internet trackers at the network-level, by acting as a DNS sinkhole, and also DHCP server, on a private network. A DNS sinkhole is the name gives to a DNS server that gives out false information to prevent the use of a certain domain name. It was designed for use on embedded devices with network capabilities, such as the Raspberry Pi. It has the ability to block traditional adverts on websites, but also adverts in other places, such as smart TVs and mobile operating systems. It works by serving as a DNS server for a private network and using a list of advert and tracking domains from predefined sources that the system uses to compare DNS queries to. \parencite{salmela2015pihole} If a match is found in one of the block lists, Pi-hole will refuse to resolve the requested domain. This feature can be used to block any domains, not the advertisement ones, by extending the block list. We use this feature to block domains that are not considered useful for a child, such as social media platforms. You can also manually whitelist a domain, such that it is never blocked, and you can use the Pi-hole system to view reports about the DNS queries done by the clients.
 
 \subsection{How it works}
 
@@ -34,7 +34,7 @@ Pi-hole acts as a forwarding DNS server, so if it does not know where a domain i
 \includegraphics[width=1\textwidth]{Figures/pihole-dns}
 \decoRule
 \caption{The flow of traffic through the Pi-hole system}
-\label{fig:circle}
+\label{fig:pihole-dns}
 \end{figure}
 
 The flow of traffic goes like this:
@@ -54,7 +54,7 @@ Pi-hole can also act as a network monitoring tool, since it logs all DNS queries
 \includegraphics[width=1\textwidth]{Figures/pihole-admin}
 \decoRule
 \caption{The Pi-hole admin dashboard}
-\label{fig:circle}
+\label{fig:pihole-admin}
 \end{figure}
 
 Other benefits that Pi-hole brings to your local network are related to bandwidth and network speed. Because it works at the DNS level and prevents the ads and blocked domains from being downloaded. Since these ad images, videos and sounds are not being downloaded, the network will perform better. For the same reasons, it also reduces bandwidth, by preventing undesired assets from being downloaded. You can also extend the default block list to include sites that are known to serve malware or act as a phishing site, which brings another level of security, very important in the context of children using the Internet. The performance should not be a problem for the Pi-hole system, since even a not so powerful Raspberry Pi has been documented of handling up to 60 clients without problems, more than enough for a family network. \parencite{salmela20177things}
