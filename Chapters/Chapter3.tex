@@ -199,6 +199,25 @@ These commands are also run by the Go back-end using a cron table, to enforce ti
 
 \section{Mobile application}
 
+In order to give the parents easy access on the network rules that the system support, we developed a mobile application.
+Using the application, a parent can easily establish the supported content control rules and view a short summary of usage for each device. The application has a simple client-server architecture, using a Go-lang back-end running on the Raspberry Pi and a cross platform mobile application, running on Android and iOS devices. The data needed to configure the system is minimal, so we used the relational database management system SQLite \citep{sqlite}, since it is easily configurable and does not require powerful hardware to run on, which makes it suitable for the Raspberry Pi. 
+
+
+\subsection{Database}
+Since not much data is needed for the system to work, the database diagram is fairly simple, as we can see in the figure \ref{fig:database-diagram}. The most important entries are the users, which represents a child, and the association between a user the the devices it owns. Each device is represented by the state it is in, blocked or not, and the time frame that if has access to the Internet. Each user corresponds to an age bracket, if it does not have the admin flag set. The age bracket is linked to a set of the blocked domains and this relation is used when showing the usage summary for each device, to establish a higher priority for the associated domains. This is used when the domains from the list are not blocked, in order to give the parent an idea about how much each child uses the domains that are considered not useful for its age and to initiate a discussion about this.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1\textwidth]{Figures/database-diagram}
+\decoRule
+\caption{Database diagram}
+\label{fig:database-diagram}
+\end{figure}
+
+\subsection{Server}
+
+\subsection{Client and features}
+
 \section{Self regulation component}
 
 %----------------------------------------------------------------------------------------
