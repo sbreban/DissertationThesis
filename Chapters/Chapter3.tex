@@ -162,29 +162,25 @@ net.ipv4.ip_forward=1
 We need to also add a new rule for the outbound traffic on the eth0 interface, which provides the Internet connection to the Raspberry Pi. This is done by adding a POSTROUTING rule to mask the private IP address of a node with the external IP address of the gateway, using the MASQUERADE target: 
 
 \begin{lstlisting}
-sudo iptables -t nat -A  POSTROUTING -o eth0 
--j MASQUERADE
+sudo iptables -t nat -A  POSTROUTING -o eth0 -j MASQUERADE
 \end{lstlisting}
 
 To give Internet access to the access point clients connected on the wlan0 interface we have to add the following filter FORWARD rule:
 
 \begin{lstlisting}
-sudo iptables -A FORWARD -i eth0 -o wlan0 
--m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 \end{lstlisting}
 
 We also use iptables rules to allow or block all network access for specific devices and to enforce the time limits for them. To block access for a device we add an INPUT rule for a device with a specific MAC address to drop the packets, by running the command like:
 
 \begin{lstlisting}
-sudo iptables -A INPUT -i wlan0 -m mac 
---mac-source 3C:83:75:D0:DA:C4 -j DROP
+sudo iptables -A INPUT -i wlan0 -m mac --mac-source 3C:83:75:D0:DA:C4 -j DROP
 \end{lstlisting}
 
 To allow back access for the blocked device, we run the command to remove the rule:
 
 \begin{lstlisting}
-sudo iptables -D INPUT -i wlan0 -m mac 
---mac-source 3C:83:75:D0:DA:C4 -j DROP
+sudo iptables -D INPUT -i wlan0 -m mac --mac-source 3C:83:75:D0:DA:C4 -j DROP
 \end{lstlisting}
 
 These commands are also run by the Go back-end using a cron table, to enforce time limits for network access for devices.
@@ -215,6 +211,86 @@ Since not much data is needed for the system to work, the database diagram is fa
 \end{figure}
 
 \subsection{Server}
+
+The language of choice for the back-end system is Go \citep{golang}. Go is an open source programming language that makes it easy to build simple, reliable and efficient software. We chose this language because of its rich open source support, its powerful remote package management tools and the built-in concurrency primitives: light-weight processes (goroutines), channels and the select statement. This features provides a strong foundation for building a RESTful web service to run in a resource limited environment, like the Raspberry Pi. The rich open source support and libraries makes it easy to build such a system and quickly scale it.
+
+At the root of our back-end system, we use the package gorrila/mux \citep{gorillaMux}, which implements a request router and dispatcher for matching incoming requests to their respective handler. This package makes it easy to define multiple routes, represented by a pattern in the URL, and their corresponding handlers. We defined a Route struct to hold the necessary parameters, such as URL pattern and handler, and we initialize the router using a list of Routes. Some of the routes that we define are:
+
+\begin{lstlisting}[language=Golang]
+Route{
+	"Users",
+	"GET",
+	"/users/{userId}",
+	usersHandler,
+},
+Route{
+	"AddUser",
+	"POST",
+	"/add_user",
+	addUserHandler,
+},
+Route{
+	"Devices",
+	"GET",
+	"/devices/{userId}",
+	devicesHandler,
+},
+Route{
+	"RegisterDevice",
+	"POST",
+	"/register_device/{userId}",
+	registerDeviceHandler,
+}
+\end{lstlisting}
+
+The router is created by a single command, and then the routes list is registered with the router, by adding the correspondig handler to each pattern:
+
+\begin{lstlisting}[language=Golang]
+router := mux.NewRouter()
+for _, route := range routes {
+	router.Handle(route.Pattern, 
+		jwtMiddleware.Handler(route.HandlerFunc)).
+		Methods(route.Method)
+}
+\end{lstlisting}
+
+Mux supports the addition of middlewares to a Router, which are executed in the order they are added if a match is found, including its subrouters. Middlewares are (typically) small pieces of code which take one request, do something with it, and pass it down to another middleware or the final handler. Some common use cases for middleware are request logging, header manipulation. We use that to add a JWT middleware to the router, in order to be able to use a JSON Web Token (JWT) as an access token to our API, such that only our mobile client can make requests.
+
+An example handler, which loads the domains defined in the system to support blocking and handles the /domains route, is:
+
+\begin{lstlisting}[language=Golang]
+func domainsHandler(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("sqlite3", "./clients.db")
+	checkError(err)
+	defer db.Close()
+
+	rows, err := db.Query("select d.id, d.name, d.domain, d.block from domains d")
+	checkError(err)
+	defer rows.Close()
+
+	var netDomains Domains
+	for rows.Next() {
+		var id int
+		var name string
+		var domain string
+		var block int
+
+		err = rows.Scan(&id, &name, &domain, &block)
+		checkError(err)
+		fmt.Println(id, name, domain)
+		domainElement := Domain{Id: id, Name: name, Domain: domain, Block: block}
+		netDomains = append(netDomains, domainElement)
+	}
+	err = rows.Err()
+	checkError(err)
+	json.NewEncoder(w).Encode(netDomains)
+	json.NewEncoder(os.Stdout).Encode(netDomains)
+}
+\end{lstlisting}
+
+The back-end defines multiple router and handlers for them, in a way that corresponds to the routes we have on the clients side, so we will detail the routes and features in the next session.
+
+Other packages used on the server side is JSON encoding package, because we use this open-standard file format to transfer data between the client and server, the SQLite integration package and the cron package, to implement the job runner that we need to establish the temporal Internet access rules.
 
 \subsection{Client and features}
 
