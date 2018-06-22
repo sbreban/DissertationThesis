@@ -129,10 +129,76 @@ We are using the DHCP server functionality of Dnsmasq, to have control over what
 
 \section{Netfilter}
 
-\section{Go Lang}
+The Netfilter framework \citep{netfilterorg} allows various networking-related operations implemented in the form of customized handlers and is provided by any Linux operating system. It offers various packet filtering, network address translation and port translation features to provide the functionality required for directing packets through a network and also block packets from reaching certain locations within the network. Netfilter is represented by a set of hooks inside the Linux kernel which allows the registration of callback functions for specific kernel modules. These functions are applied as filtering and modification rules and are called for each packet that traverses the respective hook in the networking stack.
 
-\section{Flutter}
+The most significant parts of the Netfilter hook system are the modules named ip\_tables, ip6\_tables and arp\_tables. They provide a firewall system based on rules that can filter or transform packets. These rules are organized into tables which classify them according to the type of decision they are used to make. For example, there are rules dealing with network address translation and rules dealing with the decision to allow a packet to continue to its destination or not. The tables that iptables provides are \citep{ellingwood2015iptables}:
 
-\section{All together}
+\begin{itemize}
+\item filter table, used to make decisions whether a packet should be allow or not to reach its destination
+\item NAT table, used to implement network address translation rules, to determine if and how to modify the packet's source or destination address
+\item mangle table, used to alter the packet headers in different ways, such as adjusting the TTL (Time to Live) value
+\item raw table, with the purpose of marking packets in order to opt-out of connection tracking features built on top of the Netfilter framework
+\item security table, used to set internal SELinux security context marks on packets
+\end{itemize}
+
+Within each table, the rules are organized into separate chains, which corresponds to the Netfilter hooks that trigger them. The names of the built-in chains, with the corresponding hook, are \citep{ellingwood2015iptables}:
+
+\begin{itemize}
+\item PREROUTING, triggered by the NF\_IP\_PRE\_ROUTING hook by any incoming traffic as soon as entering the network stack.
+\item INPUT, triggered by the NF\_IP\_LOCAL\_IN hook after the incoming packet has been routed if destined for the local system
+\item FORWARD, triggered by the NF\_IP\_FORWARD hook after the incoming packet has been routed if it is to be forwarded to another host
+\item OUTPUT, triggered by the NF\_IP\_LOCAL\_OUT hook by any outbound traffic created locally when it hits the network stack
+\item POSTROUTING, triggered by the NF\_IP\_POST\_ROUTING hook after routing and before sending the traffic out on the wire
+\end{itemize}
+
+The complex flow of a packet through the Netfilter framework can be seen in the figure \ref{fig:netfilter-flow}, with all the layers and tables involved.
+
+After configuring the Raspberry Pi to work as a wireless access point \citep{raspberryPiAccessPoint} by using the user space daemon hostapd \citep{hostapd}, we have to enable IP forwarding for the wireless clients, such that they are able to access the Internet, not just the local network.  This is done by changing the following setting in the /etc/sysctl.conf file:
+
+\begin{lstlisting}
+net.ipv4.ip_forward=1
+\end{lstlisting}
+
+We need to also add a new rule for the outbound traffic on the eth0 interface, which provides the Internet connection to the Raspberry Pi. This is done by adding a POSTROUTING rule to mask the private IP address of a node with the external IP address of the gateway, using the MASQUERADE target: 
+
+\begin{lstlisting}
+sudo iptables -t nat -A  POSTROUTING -o eth0 
+-j MASQUERADE
+\end{lstlisting}
+
+To give Internet access to the access point clients connected on the wlan0 interface we have to add the following filter FORWARD rule:
+
+\begin{lstlisting}
+sudo iptables -A FORWARD -i eth0 -o wlan0 
+-m state --state RELATED,ESTABLISHED -j ACCEPT
+\end{lstlisting}
+
+We also use iptables rules to allow or block all network access for specific devices and to enforce the time limits for them. To block access for a device we add an INPUT rule for a device with a specific MAC address to drop the packets, by running the command like:
+
+\begin{lstlisting}
+sudo iptables -A INPUT -i wlan0 -m mac 
+--mac-source 3C:83:75:D0:DA:C4 -j DROP
+\end{lstlisting}
+
+To allow back access for the blocked device, we run the command to remove the rule:
+
+\begin{lstlisting}
+sudo iptables -D INPUT -i wlan0 -m mac 
+--mac-source 3C:83:75:D0:DA:C4 -j DROP
+\end{lstlisting}
+
+These commands are also run by the Go back-end using a cron table, to enforce time limits for network access for devices.
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=1\textwidth]{Figures/netfilter-flow}
+\decoRule
+\caption{Flow of network packets through the Netfilter}
+\label{fig:netfilter-flow}
+\end{figure}
+
+\section{Mobile application}
+
+\section{Self regulation component}
 
 %----------------------------------------------------------------------------------------
