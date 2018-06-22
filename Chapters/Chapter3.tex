@@ -294,6 +294,199 @@ Other packages used on the server side is JSON encoding package, because we use 
 
 \subsection{Client and features}
 
+We needed to make the parental control experience consistent on both major platforms, Android and iOS, and that's way we are using the mobile framework Flutter, a modern and cross-platform approach offered by Google. Flutter is open-source and is used for crafting high-quality native interfaces on iOS and Android, The development process is fast because of the rich set of fully-customizable widgets and the native performance is full because it incorporates all the critical platform differences.
+
+The application UI is structured in a hierarchical manner, with a high level menu with and entry for each feature, each one with multiple sub-menus corresponding to the related functionality. The navigation between different pages of the user interface is done using a router, which support query string parameter parsing and function handlers. We start by creating the router and other application configuration, and then navigating to the home page, different for a child or admin type user, but if the user is not logged in, it is presented with the log-in screen first. A list of routes, which we will detail in the following sections, can be seen in the listing below. These routes closely match the routes that we have defined on our REST web service, which is used to handle the client requests.
+
+\begin{lstlisting}
+static String root = "/";
+static String adminRoute = "admin";
+static String userHomeRoute = "userHome";
+static String registerDeviceRoute = "register_device";
+static String usersRoute = "users";
+static String addUserRoute = "add_user";
+static String devicesRoute = "devices";
+static String deleteDeviceRoute = "delete_device";
+static String addDeviceRoute = "add_device";
+static String getDeviceBlockRoute = "get_device_block";
+static String setDeviceBlockRoute = "set_device_block";
+static String domainsRoute = "domains";
+static String addDomainRoute = "add_domain";
+static String editDomainRoute = "edit_domain";
+static String deleteDomainRoute = "delete_domain";
+static String topDevicesRoute = "top_devices";
+static String topDomainsRoute = "top_domains";
+\end{lstlisting}
+
+The navigation to a new route is done by calling navigateTo on the router object, with the context and the route pattern, including parameters, as arguments. We can see in the listing below how we navigate to the devices view for a user, by using the user ID as parameter to the route pattern:
+
+\begin{lstlisting}
+router.navigateTo(context, "${Routes.devicesRoute}?userId=${user.id}");
+\end{lstlisting}
+
+For the user interface component, we build custom widgets by extending the StatefulWidget class to create lists, cards or forms that fits our model elements and hold state that we need for the application to work, such as domain or device blocking state. In the listing below we can see how we build a scrollable list view by loading all the devices for the a user, and the resulting UI component in figure \ref{fig:user-devices}. The block icon on the right represent the state of the device, blocked or not, and that state changes on list item tap.
+
+\begin{lstlisting}
+class DevicesWidget extends StatefulWidget {
+
+  final int userId;
+
+  DevicesWidget(this.userId);
+
+  @override
+  State createState() {
+    return new DevicesWidgetState(userId);
+  }
+}
+
+class DevicesWidgetState extends State<DevicesWidget> {
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+  final int userId;
+
+  DevicesWidgetState(this.userId);
+
+  Widget _buildDevicesList() {
+    print("_buildDevicesList");
+
+    RestDataSource restDataSource = new RestDataSource();
+    final Future<Response> response = restDataSource.get("${Routes.devicesRoute}/$userId");
+
+    return new FutureBuilder(
+      future: response,
+      builder: (BuildContext context, AsyncSnapshot<Response> snapshot) {
+        if (snapshot.data != null) {
+          try {
+            print("Devices response data: ${snapshot.data.body}");
+            final responseJson = json.decode(snapshot.data.body);
+            return new ListView.builder(
+                padding: const EdgeInsets.all(16.0),
+                itemBuilder: (context, index) {
+                  if (index < responseJson.length) {
+                    print("Device $index : ${responseJson[index]}");
+                    if (responseJson[index] != null) {
+                      Device netDomain =
+                          Device.fromJson(responseJson[index]);
+                      return _buildRow(netDomain);
+                    }
+                  }
+                });
+          } catch (e) {
+            return new Text("Error loading: " + e.toString());
+          }
+        } else {
+          return new CircularProgressIndicator();
+        }
+      },
+    );
+  }
+
+  Widget _buildRow(Device value) {
+    return new DeviceWidget(value, userId);
+  }
+
+  addDevice() {
+    var router = Config.getInstance().router;
+    router.navigateTo(context, "${Routes.addDeviceRoute}?userId=$userId");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("Build DevicesWidgetState");
+    return new Scaffold(
+      appBar: new AppBar(
+          title: new Text('Devices'),
+          backgroundColor: Colors.black87,
+          actions: [
+            new IconButton(
+              icon: new Icon(Icons.add),
+              onPressed: () => addDevice(),
+            ),
+          ]
+      ),
+      body: _buildDevicesList(),
+    );
+  }
+}
+\end{lstlisting}
+
+\begin{figure}[th]
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/devices}
+\decoRule
+\caption{The devices view for a user}
+\label{fig:user-devices}
+\end{figure}
+
+\subsection{Blocking and filtering}
+
+We provide two levels of filtering, for devices and for domains, which applies for all devices. The device level blocking is access by using the user UI. When accessing the user UI, we can see a list of users for which the current user is admin, in a card like view, with the profile picture, user name and the associated age bracket. We can also add a new user, by using the add menu from the top right corner, which gets us to the add page, to fill the user details. The user views can be seen in figure \ref{fig:user-views}.
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{users}
+  \caption{The user view}
+  \label{fig:users}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{add-user}
+  \caption{The add user view}
+  \label{fig:add-user}
+\end{subfigure}
+\caption{The user related views}
+\label{fig:user-views}
+\end{figure}
+
+For each user, we can view the list of associated devices by tapping on the user card. This gets us to a list of devices, which we can block or unblock, depending on the current state. A long press on a device shows a quick menu, from which we can access the time window setting component, where we can define the time interval in which the device has access to the Internet. That menu also allows the admin user to edit the details of a device or to delete it. We can also add a new device by using the top right menu item. All these view are shown in the figure \ref{fig:device-views}.
+
+\begin{figure}
+\centering
+\begin{subfigure}{.33\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{devices}
+  \caption{The devices view}
+  \label{fig:devices}
+\end{subfigure}%
+\begin{subfigure}{.33\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{add-device}
+  \caption{The add device view}
+  \label{fig:add-device}
+\end{subfigure}
+\begin{subfigure}{.33\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{time-window}
+  \caption{Device time window}
+  \label{fig:time-window}
+\end{subfigure}
+\caption{The user related views}
+\label{fig:device-views}
+\end{figure}
+
+\subsection{Reporting}
+
+In contrast with the other parental control systems presented, we provide only limited reporting functionality, since we try to rely more on self-regulation than parental control. We try to encourage more communication between the parents and the children about Internet usage, and to get a starting point for the discussion, but parent need to understand some of the screen time usage of a child. These data is split into two categories: domains related query data and device related query data. The first category shows the top ten most visited domains, with the number of queries for each domains, while the second category show a top of devices with made the most requests to the DNS server. The related view tables can be seen in the figure \ref{fig:top-views}.
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{top-domains}
+  \caption{Top domains view}
+  \label{fig:top-domains}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{top-devices}
+  \caption{Top devices view}
+  \label{fig:top-devices}
+\end{subfigure}
+\caption{The reporting related views}
+\label{fig:top-views}
+\end{figure}
+
 \section{Self regulation component}
 
 %----------------------------------------------------------------------------------------
