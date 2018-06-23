@@ -8,7 +8,7 @@ We started working on our system as a solution for parents who wanted a reliable
 
 The system that we developed does not require any kind of client configuration, all the configuration needed is done on the central node, which in out case is a Raspberry Pi \citep{raspberryPi}, which is an access point and a system control node, and a mobile application which the parents use to configure the parental control policies. We also offer a client application design for children devices, but that is only to extend the basic functionality and to also help with some initial configuration. So we basically moved the configuration part from the clients to the central node of the system. We tried to make the configuration as simple as possible, such that even a non-technical person can configure and start the system. 
 
-The only commercial level alternative control parental system that we found using the same approach is Circle With Disney, whose details we presented in the previous chapter. It uses an additional network device which you have to purchase and it work by connecting to the local wireless network and using a technique called ARP Spoofing \citep{lockhart2004network}. Because we are building out system around the access point, instead of using an additional device, we have much more flexibility in the techniques we use for filtering and blocking at potentially a higher cost for the device. Any type of network device with a wireless card can be used to establish this kind of setup, but we used a Raspberry Pi because it is a cheap device, having almost the same price as a good router, and is quite powerful and flexible. The system diagram can be seen in figure \ref{fig:system-diagram}. The system was designed with the mobile clients in mind, but there is no limitation for laptop wireless clients, since the same blocking rules and time usage limits would apply for that type of clients too.
+The only commercial level alternative control parental system that we found using the same approach is Circle With Disney, whose details we presented in the previous chapter. It uses an additional network device which you have to purchase and it work by connecting to the local wireless network and using a technique called ARP Spoofing \citep{lockhart2004network}. Because we are building out system around the access point, instead of using an additional device, we have much more flexibility in the techniques we use for filtering and blocking at potentially a higher cost for the device. Any type of network device with a wireless card can be used to establish this kind of setup, but we used a Raspberry Pi because it is a cheap device, having almost the same price as a good router, and is quite powerful and flexible. The system diagram can be seen in Figure \ref{fig:system-diagram}. The system was designed with the mobile clients in mind, but there is no limitation for laptop wireless clients, since the same blocking rules and time usage limits would apply for that type of clients too.
 
 \begin{figure}[th]
 \centering
@@ -43,7 +43,7 @@ We use this feature to block domains that are not considered useful for a child,
 
 \subsection{How it works}
 
-Pi-hole acts as a forwarding DNS server, so if it does not know where a domain is it forwards the query to another server. When you configure it, it knows where the ad-serving domains are, because they are all in the local list, along with all the explicitly blocked domains, so it does not have to forward those requests. But it does not know where the legitimate domains are, so those requests are forwarded to an upstream, recursive server. Those servers also don't know where it is only if they were asked to find it before, the only DNS servers that truly know where a domain is are the authoritative DNS servers. The flow of events that are triggered when Pi-hole receives a DNS query can be seen in the figure below \citep{salmela2017ftldns}.
+Pi-hole acts as a forwarding DNS server, so if it does not know where a domain is it forwards the query to another server. When you configure it, it knows where the ad-serving domains are, because they are all in the local list, along with all the explicitly blocked domains, so it does not have to forward those requests. But it does not know where the legitimate domains are, so those requests are forwarded to an upstream, recursive server. Those servers also don't know where it is only if they were asked to find it before, the only DNS servers that truly know where a domain is are the authoritative DNS servers. The flow of events that are triggered when Pi-hole receives a DNS query can be seen in the Figure \ref{fig:pihole-dns} \citep{salmela2017ftldns}.
 
 \begin{figure}[th]
 \centering
@@ -63,7 +63,7 @@ The flow of traffic goes like this:
 \item Pi-hole save the answer in the cache to be able to respond more quickly if the same domain is queried again
 \end{enumerate}
 
-Pi-hole can also act as a network monitoring tool, since it logs all DNS queries sent to it, by default, so you can find what kind of traffic is going through your network. We integrated a component for visualizing this data into our system, to be able to quickly tell what domains are most visited by the children and what blocked domains they are trying to access. This integration was made easier by the fact that Pi-hole has a component which takes the raw data from the logs and pre-process it, storing it in a local database, to be able to serve quickly the types of queries needed, such as the top visited domains and the top blocked domains. We access this data by using a socket and some predefined commands. Pi-hole offers also a web interface to view these detailed reports. You can see the query types over time, forward destination over time, top domains, top blocked domains and other useful reports, as can be seen in the figure below.
+Pi-hole can also act as a network monitoring tool, since it logs all DNS queries sent to it, by default, so you can find what kind of traffic is going through your network. We integrated a component for visualizing this data into our system, to be able to quickly tell what domains are most visited by the children and what blocked domains they are trying to access. This integration was made easier by the fact that Pi-hole has a component which takes the raw data from the logs and pre-process it, storing it in a local database, to be able to serve quickly the types of queries needed, such as the top visited domains and the top blocked domains. We access this data by using a socket and some predefined commands. Pi-hole offers also a web interface to view these detailed reports. You can see the query types over time, forward destination over time, top domains, top blocked domains and other useful reports, as can be seen in the Figure \ref{fig:pihole-admin}.
 
 \begin{figure}[th]
 \centering
@@ -151,7 +151,7 @@ Within each table, the rules are organized into separate chains, which correspon
 \item POSTROUTING, triggered by the NF\_IP\_POST\_ROUTING hook after routing and before sending the traffic out on the wire
 \end{itemize}
 
-The complex flow of a packet through the Netfilter framework can be seen in the figure \ref{fig:netfilter-flow}, with all the layers and tables involved.
+The complex flow of a packet through the Netfilter framework can be seen in the Figure \ref{fig:netfilter-flow}, with all the layers and tables involved.
 
 After configuring the Raspberry Pi to work as a wireless access point \citep{raspberryPiAccessPoint} by using the user space daemon hostapd \citep{hostapd}, we have to enable IP forwarding for the wireless clients, such that they are able to access the Internet, not just the local network.  This is done by changing the following setting in the /etc/sysctl.conf file:
 
@@ -200,7 +200,7 @@ Using the application, a parent can easily establish the supported content contr
 
 
 \subsection{Database}
-Since not much data is needed for the system to work, the database diagram is fairly simple, as we can see in the figure \ref{fig:database-diagram}. The most important entries are the users, which represents a child, and the association between a user the the devices it owns. Each device is represented by the state it is in, blocked or not, and the time frame that if has access to the Internet. Each user corresponds to an age bracket, if it does not have the admin flag set. The age bracket is linked to a set of the blocked domains and this relation is used when showing the usage summary for each device, to establish a higher priority for the associated domains. This is used when the domains from the list are not blocked, in order to give the parent an idea about how much each child uses the domains that are considered not useful for its age and to initiate a discussion about this.
+Since not much data is needed for the system to work, the database diagram is fairly simple, as we can see in the Figure \ref{fig:database-diagram}. The most important entries are the users, which represents a child, and the association between a user the the devices it owns. Each device is represented by the state it is in, blocked or not, and the time frame that if has access to the Internet. Each user corresponds to an age bracket, if it does not have the admin flag set. The age bracket is linked to a set of the blocked domains and this relation is used when showing the usage summary for each device, to establish a higher priority for the associated domains. This is used when the domains from the list are not blocked, in order to give the parent an idea about how much each child uses the domains that are considered not useful for its age and to initiate a discussion about this.
 
 \begin{figure}[th]
 \centering
@@ -324,7 +324,7 @@ The navigation to a new route is done by calling navigateTo on the router object
 router.navigateTo(context, "${Routes.devicesRoute}?userId=${user.id}");
 \end{lstlisting}
 
-For the user interface component, we build custom widgets by extending the StatefulWidget class to create lists, cards or forms that fits our model elements and hold state that we need for the application to work, such as domain or device blocking state. In the listing below we can see how we build a scrollable list view by loading all the devices for the a user, and the resulting UI component in figure \ref{fig:user-devices}. The block icon on the right represent the state of the device, blocked or not, and that state changes on list item tap.
+For the user interface component, we build custom widgets by extending the StatefulWidget class to create lists, cards or forms that fits our model elements and hold state that we need for the application to work, such as domain or device blocking state. In the listing below we can see how we build a scrollable list view by loading all the devices for the a user, and the resulting UI component in Figure \ref{fig:user-devices}. The block icon on the right represent the state of the device, blocked or not, and that state changes on list item tap.
 
 \begin{lstlisting}
 class DevicesWidget extends StatefulWidget {
@@ -419,7 +419,7 @@ class DevicesWidgetState extends State<DevicesWidget> {
 
 \subsection{Blocking and filtering}
 
-We provide two levels of filtering, for devices and for domains, which applies for all devices. The device level blocking is access by using the user UI. When accessing the user UI, we can see a list of users for which the current user is admin, in a card like view, with the profile picture, user name and the associated age bracket. We can also add a new user, by using the add menu from the top right corner, which gets us to the add page, to fill the user details. The user views can be seen in figure \ref{fig:user-views}.
+We provide two levels of filtering, for devices and for domains, which applies for all devices. The device level blocking is access by using the user UI. When accessing the user UI, we can see a list of users for which the current user is admin, in a card like view, with the profile picture, user name and the associated age bracket. We can also add a new user, by using the add menu from the top right corner, which gets us to the add page, to fill the user details. The user views can be seen in Figure \ref{fig:user-views}.
 
 \begin{figure}
 \centering
@@ -439,7 +439,7 @@ We provide two levels of filtering, for devices and for domains, which applies f
 \label{fig:user-views}
 \end{figure}
 
-For each user, we can view the list of associated devices by tapping on the user card. This gets us to a list of devices, which we can block or unblock, depending on the current state. A long press on a device shows a quick menu, from which we can access the time window setting component, where we can define the time interval in which the device has access to the Internet. That menu also allows the admin user to edit the details of a device or to delete it. We can also add a new device by using the top right menu item. All these view are shown in the figure \ref{fig:device-views}.
+For each user, we can view the list of associated devices by tapping on the user card. This gets us to a list of devices, which we can block or unblock, depending on the current state. A long press on a device shows a quick menu, from which we can access the time window setting component, where we can define the time interval in which the device has access to the Internet. That menu also allows the admin user to edit the details of a device or to delete it. We can also add a new device by using the top right menu item. All these view are shown in the Figure \ref{fig:device-views}.
 
 \begin{figure}
 \centering
@@ -467,7 +467,7 @@ For each user, we can view the list of associated devices by tapping on the user
 
 \subsection{Reporting}
 
-In contrast with the other parental control systems presented, we provide only limited reporting functionality, since we try to rely more on self-regulation than parental control. We try to encourage more communication between the parents and the children about Internet usage, and to get a starting point for the discussion, but parent need to understand some of the screen time usage of a child. These data is split into two categories: domains related query data and device related query data. The first category shows the top ten most visited domains, with the number of queries for each domains, while the second category show a top of devices with made the most requests to the DNS server. The related view tables can be seen in the figure \ref{fig:top-views}.
+In contrast with the other parental control systems presented, we provide only limited reporting functionality, since we try to rely more on self-regulation than parental control. We try to encourage more communication between the parents and the children about Internet usage, and to get a starting point for the discussion, but parent need to understand some of the screen time usage of a child. These data is split into two categories: domains related query data and device related query data. The first category shows the top ten most visited domains, with the number of queries for each domains, while the second category show a top of devices with made the most requests to the DNS server. The related view tables can be seen in the Figure \ref{fig:top-views}.
 
 \begin{figure}
 \centering
