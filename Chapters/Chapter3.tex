@@ -489,6 +489,14 @@ In contrast with the other parental control systems presented, we provide only l
 
 \section{Self regulation component}
 
+We followed the application design suggestions from \citep{wisniewski2017parental} in order to develop a parental control system that relies mostly on parental mediation and child self-regulation. We tried to promote collaborative practices between parents and children when establishing policies and to support the self-regulatory processes even in the absence of parents. The collaborative process is initiated by the parent with the support of the data provided by our system. The reporting system that we developed is part of the monitoring component of the parental mediation technique. The parent can see summaries about a child Internet activity such as the frequency and the domains visited, without being intrusive to the child privacy. The restriction part of the mediation technique is represented by the domains blocking and device restriction functionalities.
+
+But the most important part of the parental control system is the self-regulation component. We introduced this concept into our system by integrating a quiz-taking component and a reward mechanism. This is done by using the backend component of the open-source quiz-taking application quiznoob \citep{callahan2018quiznoob}, and extending it to work with our system. The basic principle of this system is to allow users, the children, to take quizzes parents can create, and to extend their daily time limit, a limited number of times. This backend is built on Ruby on Rails \citep{rubyOnRails} and provides a rich API, which makes it easy to integrate with our system.
+
+The quiznoob system offers a rich web application which can be used to create quizzes. You can import questions from a spreadsheet document or create them manually. The questions are organized into quizzes, which can have a certain subject. After creating a quiz, you have to associate it with a user to give access to the reward system.
+
+Our client application has a quiz-taking feature for the child users. You have to install the application on the target device if you want the child to access the reward system. When the child first access this functionality, they see a list of subjects for which they have access to a test, as we can see in Figure \ref{fig:subjects}. After choosing a subject, they can pick from a list of quizzes on that subject. The quiz starting page can be seen in Figure \ref{fig:quiz-views}.
+
 \begin{figure}[th]
 \centering
 \includegraphics[width=0.4\textwidth]{Figures/subjects}
@@ -499,13 +507,13 @@ In contrast with the other parental control systems presented, we provide only l
 
 \begin{figure}
 \centering
-\begin{subfigure}{.5\textwidth}
+\begin{subfigure}{.4\textwidth}
   \centering
   \includegraphics[width=.9\linewidth]{quizzes}
   \caption{The quizzes list view}
   \label{fig:quizzes}
 \end{subfigure}%
-\begin{subfigure}{.5\textwidth}
+\begin{subfigure}{.4\textwidth}
   \centering
   \includegraphics[width=.9\linewidth]{quiz-start}
   \caption{The quiz start page}
@@ -514,6 +522,8 @@ In contrast with the other parental control systems presented, we provide only l
 \caption{The quiz related views}
 \label{fig:quiz-views}
 \end{figure}
+
+Each question have multiple possible answers, with only one correct. For each correct answer, the user is rewarded a point, which can be seen in the top right corner of the screen, as in Figure \ref{fig:question-view}. The points gathered can be used to access the rewards.
 
 \begin{figure}
 \centering
@@ -539,6 +549,8 @@ In contrast with the other parental control systems presented, we provide only l
 \label{fig:question-view}
 \end{figure}
 
+The rewards are defined by the parents and come as additional Internet time for a day. When creating a reward, the parent have to specify the amount of extra time, in minutes, and the cost of the rewards, is quiz points. The points earned by answering the questions are used to unlock a reward. Each child can use only a single reward per day so they do not over-extend their access time. We can see in the Figure \ref{fig:reward-views} a reward of 15 additional minutes costing 10 points. If the user, having 14 points, chooses to use this rewards, it gets additional time and looses the 10 points and the possibility to use another reward until tomorrow.
+
 \begin{figure}
 \centering
 \begin{subfigure}{.33\textwidth}
@@ -562,5 +574,9 @@ In contrast with the other parental control systems presented, we provide only l
 \caption{The reward views}
 \label{fig:reward-views}
 \end{figure}
+
+\section{Conclusion}
+
+This reward based system offers an elegant implementation of the self-regulation approach. It offers a nice opportunity for the child to learn while getting rewarded additional screen time. It can be easily extended co support more complex questions, such as ones including graphics elements, including multiple subjects. Together with the blocking and reporting features, this offers a solid solution to the parental control problem. We try to provide a solution that uses the latest studies related to child behavior to design a system around the most important control techniques, self-monitoring and active mediation.
 
 %----------------------------------------------------------------------------------------
